@@ -1,0 +1,20 @@
+# Ignorar archivos específicos del sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar archivos de configuración local
+*.env
+
+# Ignorar archivos relacionados con SQL Server
+*.mdf
+*.ldf
+*.ndf
+
+# Ignorar archivos temporales o de copia de seguridad
+*.log
+*.bak
+*.tmp
+
+# Ignorar archivos específicos del IDE
+.vscode/
+.idea/
