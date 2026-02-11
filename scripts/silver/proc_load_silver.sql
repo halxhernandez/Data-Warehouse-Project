@@ -109,7 +109,6 @@ BEGIN
               CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
         PRINT '>> -------------';
 
-
         ---------------------------------------------------------------------------
         -- Carga de tabla: silver.crm_prd_info
         -- Objetivo:
@@ -162,7 +161,6 @@ BEGIN
         PRINT '>> Duración De Carga: ' +
               CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
         PRINT '>> -------------';
-
 
         ---------------------------------------------------------------------------
         -- Carga de tabla: silver.crm_sales_details
@@ -233,6 +231,124 @@ BEGIN
               CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
         PRINT '>> -------------';
 
+        PRINT '------------------------------------------------';
+        PRINT 'Cargando Tablas ERP';
+        PRINT '------------------------------------------------';
+
+        ---------------------------------------------------------------------------
+        -- Carga de tabla: silver.erp_cust_az12
+        -- Objetivo:
+        --  • Limpiar identificadores de cliente
+        --  • Validar fechas de nacimiento
+        --  • Normalizar valores de género
+        ---------------------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT '>> Truncando Tabla: silver.erp_cust_az12';
+        TRUNCATE TABLE silver.erp_cust_az12;
+
+        PRINT '>> Insertando Datos En: silver.erp_cust_az12';
+
+        INSERT INTO silver.erp_cust_az12 (
+            cid,
+            bdate,
+            gen
+        )
+        SELECT
+            -- Eliminación del prefijo 'NAS' en caso de existir
+            CASE
+                WHEN cid LIKE 'NAS%'
+                    THEN SUBSTRING(cid, 4, LEN(cid))
+                ELSE cid
+            END AS cid,
+
+            -- Validación de fechas futuras
+            CASE
+                WHEN bdate > GETDATE() THEN NULL
+                ELSE bdate
+            END AS bdate,
+
+            -- Normalización del género
+            CASE
+                WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
+                WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
+                ELSE 'n/a'
+            END AS gen
+
+        FROM bronze.erp_cust_az12;
+
+        SET @end_time = GETDATE();
+        PRINT '>> Duración De Carga: ' +
+              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
+        PRINT '>> -------------';
+
+        ---------------------------------------------------------------------------
+        -- Carga de tabla: silver.erp_loc_a101
+        -- Objetivo:
+        --  • Estandarizar identificadores
+        --  • Normalizar códigos de país
+        --  • Controlar valores nulos o vacíos
+        ---------------------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT '>> Truncando Tabla: silver.erp_loc_a101';
+        TRUNCATE TABLE silver.erp_loc_a101;
+
+        PRINT '>> Insertando Datos En: silver.erp_loc_a101';
+
+        INSERT INTO silver.erp_loc_a101 (
+            cid,
+            cntry
+        )
+        SELECT
+            -- Eliminación de guiones en el identificador
+            REPLACE(cid, '-', '') AS cid,
+
+            -- Normalización de códigos de país
+            CASE
+                WHEN TRIM(cntry) = 'DE' THEN 'Germany'
+                WHEN TRIM(cntry) IN ('US', 'USA') THEN 'United States'
+                WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
+                ELSE TRIM(cntry)
+            END AS cntry
+
+        FROM bronze.erp_loc_a101;
+
+        SET @end_time = GETDATE();
+        PRINT '>> Duración De Carga: ' +
+              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
+        PRINT '>> -------------';
+
+        ---------------------------------------------------------------------------
+        -- Carga de tabla: silver.erp_px_cat_g1v2
+        -- Objetivo:
+        --  • Transferencia estructurada de categorías y subcategorías
+        --  • Mantener consistencia para futuras relaciones dimensionales
+        ---------------------------------------------------------------------------
+        SET @start_time = GETDATE();
+
+        PRINT '>> Truncando Tabla: silver.erp_px_cat_g1v2';
+        TRUNCATE TABLE silver.erp_px_cat_g1v2;
+
+        PRINT '>> Insertando Datos En: silver.erp_px_cat_g1v2';
+
+        INSERT INTO silver.erp_px_cat_g1v2 (
+            id,
+            cat,
+            subcat,
+            maintenance
+        )
+        SELECT
+            id,
+            cat,
+            subcat,
+            maintenance
+        FROM bronze.erp_px_cat_g1v2;
+
+        SET @end_time = GETDATE();
+        PRINT '>> Duración De Carga: ' +
+              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
+        PRINT '>> -------------';
 
         ---------------------------------------------------------------------------
         -- Finalización del proceso general
