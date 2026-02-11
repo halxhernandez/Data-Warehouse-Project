@@ -59,12 +59,8 @@ IF OBJECT_ID('silver.crm_prd_info', 'U') IS NOT NULL
 GO
 
 CREATE TABLE silver.crm_prd_info (
-<<<<<<< HEAD
-    prd_id          INT,            -- Identificador interno del producto
-=======
     prd_id          INT,             -- Identificador interno del producto
     cat_id          NVARCHAR(50),    -- Identificador interno de la categoría
->>>>>>> bc99f54 (feat(silver): crear tablas de limpieza y estandarización para CRM y ERP)
     prd_key         NVARCHAR(50),    -- Clave de negocio del producto
     prd_nm          NVARCHAR(50),    -- Nombre del producto
     prd_cost        INT,             -- Costo base
