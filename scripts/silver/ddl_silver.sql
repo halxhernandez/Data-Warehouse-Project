@@ -86,9 +86,9 @@ CREATE TABLE silver.crm_sales_details (
     sls_ord_num     NVARCHAR(50),    -- Número de orden
     sls_prd_key     NVARCHAR(50),    -- Clave del producto
     sls_cust_id     INT,             -- Identificador del cliente
-    sls_order_dt    INT,             -- Fecha de orden (pendiente de conversión)
-    sls_ship_dt     INT,             -- Fecha de envío
-    sls_due_dt      INT,             -- Fecha comprometida
+    sls_order_dt    DATE,            -- Fecha de orden (pendiente de conversión)
+    sls_ship_dt     DATE,            -- Fecha de envío
+    sls_due_dt      DATE,            -- Fecha comprometida
     sls_sales       INT,             -- Importe de la venta
     sls_quantity    INT,             -- Unidades vendidas
     sls_price       INT,             -- Precio unitario
