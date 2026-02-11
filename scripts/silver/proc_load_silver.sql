@@ -44,11 +44,11 @@ BEGIN
         SET @batch_start_time = GETDATE();
 
         PRINT '================================================';
-        PRINT 'Loading Silver Layer';
+        PRINT 'Cargando Capa Silver';
         PRINT '================================================';
 
         PRINT '------------------------------------------------';
-        PRINT 'Loading CRM Tables';
+        PRINT 'Cargando Tablas CRM';
         PRINT '------------------------------------------------';
 
         ---------------------------------------------------------------------------
@@ -60,10 +60,10 @@ BEGIN
         ---------------------------------------------------------------------------
         SET @start_time = GETDATE();
 
-        PRINT '>> Truncating Table: silver.crm_cust_info';
+        PRINT '>> Truncando Tabla: silver.crm_cust_info';
         TRUNCATE TABLE silver.crm_cust_info;
 
-        PRINT '>> Inserting Data Into: silver.crm_cust_info';
+        PRINT '>> Insertando Datos En: silver.crm_cust_info';
 
         INSERT INTO silver.crm_cust_info (
             cst_id,
@@ -105,8 +105,8 @@ BEGIN
         WHERE flag_last = 1;
 
         SET @end_time = GETDATE();
-        PRINT '>> Load Duration: ' +
-              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+        PRINT '>> Duración De Carga: ' +
+              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
         PRINT '>> -------------';
 
 
@@ -119,10 +119,10 @@ BEGIN
         ---------------------------------------------------------------------------
         SET @start_time = GETDATE();
 
-        PRINT '>> Truncating Table: silver.crm_prd_info';
+        PRINT '>> Truncando Tabla: silver.crm_prd_info';
         TRUNCATE TABLE silver.crm_prd_info;
 
-        PRINT '>> Inserting Data Into: silver.crm_prd_info';
+        PRINT '>> Insertando Datos En: silver.crm_prd_info';
 
         INSERT INTO silver.crm_prd_info (
             prd_id,
@@ -159,8 +159,8 @@ BEGIN
         FROM bronze.crm_prd_info;
 
         SET @end_time = GETDATE();
-        PRINT '>> Load Duration: ' +
-              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+        PRINT '>> Duración De Carga: ' +
+              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
         PRINT '>> -------------';
 
 
@@ -173,10 +173,10 @@ BEGIN
         ---------------------------------------------------------------------------
         SET @start_time = GETDATE();
 
-        PRINT '>> Truncating Table: silver.crm_sales_details';
+        PRINT '>> Truncando Tabla: silver.crm_sales_details';
         TRUNCATE TABLE silver.crm_sales_details;
 
-        PRINT '>> Inserting Data Into: silver.crm_sales_details';
+        PRINT '>> Insertando Datos En: silver.crm_sales_details';
 
         INSERT INTO silver.crm_sales_details (
             sls_ord_num,
@@ -229,8 +229,8 @@ BEGIN
         FROM bronze.crm_sales_details;
 
         SET @end_time = GETDATE();
-        PRINT '>> Load Duration: ' +
-              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' seconds';
+        PRINT '>> Duración De Carga: ' +
+              CAST(DATEDIFF(SECOND, @start_time, @end_time) AS NVARCHAR) + ' segundos';
         PRINT '>> -------------';
 
 
@@ -240,10 +240,10 @@ BEGIN
         SET @batch_end_time = GETDATE();
 
         PRINT '==========================================';
-        PRINT 'Loading Silver Layer is Completed';
-        PRINT 'Total Load Duration: ' +
+        PRINT 'Carga En la Capa Silver Completada ';
+        PRINT 'Duración Total De Carga: ' +
               CAST(DATEDIFF(SECOND, @batch_start_time, @batch_end_time) AS NVARCHAR)
-              + ' seconds';
+              + ' segundos';
         PRINT '==========================================';
 
     END TRY
@@ -252,12 +252,12 @@ BEGIN
     -- Manejo de errores
     -------------------------------------------------------------------------------
     BEGIN CATCH
-        PRINT '==========================================';
+        PRINT '===================================================';
         PRINT 'ERROR OCURRIDO DURANTE LA CARGA DE LA CAPA SILVER';
         PRINT 'Mensaje: ' + ERROR_MESSAGE();
         PRINT 'Número: ' + CAST(ERROR_NUMBER() AS NVARCHAR);
         PRINT 'Estado: ' + CAST(ERROR_STATE() AS NVARCHAR);
-        PRINT '==========================================';
+        PRINT '===================================================';
     END CATCH
 
 END;
